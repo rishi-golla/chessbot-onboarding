@@ -5,10 +5,12 @@ import {
     RegisterWebsocketMessage,
     GameInterruptedMessage,
     PlacementMessage,
+    GameStartedMessage,
 } from "../../common/message/messages.ts";
 import { clientManager, socketManager } from "./managers.ts";
-import { GamManager } from "./game-manager.ts";
+import { GameManager } from "./game-manager.ts";
 import { GameEngine } from "../../common/game-engine.ts"
+
 
 export let gameManager: GameManager | null = null;
 
@@ -58,14 +60,19 @@ apiRouter.get("/board-state", (_, res) => {
 });
 
 // A client will post this request whenever they are ready to start a game
-apiRouter.post("/sta-gam", (req, res) => {
-    const hostPiece = req.query.hostPiece as PieceType;
-    gameManager = new GameManager(
-        new GameEngine(hostPiece),
-        socketManager,
-        hostPiece,
-        clientManager,
-    );
-    clientManager.sendToClient(new GameStartedMessage());
-    return res.send({ message: "success" });
+apiRouter.get('/game-state', (req, res) => {
+    if(gameManager){
+        const state = gameManager.getGameState();
+        return res.status(200).json(state);
+    }
+    else{
+        return res.status(500).json({ error: "game manager not initiated"});
+    }
 });
+
+// apiRouter.post("/start-game", (_, res) => {
+//     //fix this line, might be wrong, human created
+//     gameManager = new GameManager(new GameEngine(), socketManager, "x", clientManager);
+//     clientManager.sendToClient(new GameStartedMessage);
+//     return res.send({message: "success"});
+// });

@@ -1,10 +1,11 @@
 import express, { RequestHandler, Express } from "express";
 import ViteExpress from "vite-express";
 import cookieParser from "cookie-parser";
-import { v4 as uuid } from "uuid";
+import { v4 as uuid } from "uuid";  // Corrected the uuid import
 import { websocketHandler } from "./api/api.ts";
 import expressWebSocket from "express-ws";
 import { clientManager } from "./api/managers.ts";
+import { apiRouter } from "./api/api.ts";
 
 const app = expressWebSocket(express()).app;
 
@@ -14,7 +15,7 @@ app.use(cookieParser());
 
 /**
  * Attaches a unique clientId to req if it does not already exist.
- * The cookie is automatically sent back to the client, stored in the browser, and included by the client in all future requests.
+ * The cookie is automatically sent back t  o the client, stored in the browser, and included by the client in all future requests.
  */
 const checkAuthentication: RequestHandler = (req, res, next) => {
     if (!req.cookies.id) {

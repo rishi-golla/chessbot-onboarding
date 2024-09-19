@@ -1,13 +1,15 @@
 import { GameEngine } from "../../common/game-engine.ts";
 import {
     Message,
-    SndMessage,
+    SendMessage,
+    PlacementMessage,
+    GameStartedMessage,
     GameInterruptedMessage,
     GameFinishedMessage,
 } from "../../common/message/messages.ts";
 import { SocketManager } from "./socket-manager.ts";
 import { ClientManager } from "./client-manager.ts";
-import { ClintType } from "../../common/client-types.ts"
+import { ClientType } from "../../common/client-types.ts"
 import {
     GameEndReason,
     GameEndReason as GameInterruptedReason,
@@ -86,7 +88,7 @@ export class GameManager {
               console.log("Not sending placement message because game is finished.", message.toJson())
               return;
             }
-            if (this.game.place(message.placement)) {
+            if (this.game.place(message)) {
                 sendToOpponent(message);
                 const gameFinishedReason = this.game.getGameFinishedReason();
                 if (gameFinishedReason) {
@@ -102,4 +104,13 @@ export class GameManager {
             sendToOpponent(message);
         }
     }
+
+    // public isColumnWin(): boolean {
+    //     for (let col = 0; col < 3; col++){
+    //         if(this.game.board[0][col] && this.game.board[0][col] === this.game.board[1][col] && this.game.board[1][col] === this.game.board[2][col]){
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 }
